@@ -1,0 +1,10 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["U88CU8JNNW.com.lauturelabs.plan"],
+        "components": [{"/": "/invite/"}]
+      }
+    ]
+  }
+}

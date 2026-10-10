@@ -26,45 +26,25 @@ th{color:var(--mute)}
   <h2>Keep your invitation</h2>
   <p>Invite code: <code id="code"></code></p>
   <p id="instructions"></p>
-  <p>New to PLAN? <a href="https://testflight.apple.com/join/YVf7d7hb">Install with TestFlight</a>, then return to this page and tap Open PLAN. Keep this link until you're in.</p>
+  <p><button id="copy" class="action" type="button">Copy invitation link</button></p>
+  <p id="copy-status" role="status" aria-live="polite"></p>
+  <p><label for="full-link">Full invitation link (select it to copy manually)</label><br><input id="full-link" type="text" readonly></p>
+  <h2>New to PLAN?</h2>
+  <p role="status">An invitation-capable external beta is not available yet. Keep this link and ask your inviter when a supported beta is ready. If you already have a supporting build, tap Open PLAN.</p>
+  <p>PLAN is in beta, not available as a public App Store download. Keep the original invitation until you have reviewed it inside PLAN.</p>
 </section>
 <p>Opening a link does not join a group or challenge. Review and accept the invitation inside PLAN.</p>
 <p><a href="../privacy/">Privacy policy</a> &nbsp; <a href="mailto:support@lauturelabs.com">Support</a></p>
-<noscript><p>Enable JavaScript to open this invitation, or ask your friend for its code. In PLAN, go to Friends, then Groups or Challenges.</p></noscript>
+<noscript><p>Keep the original full invitation link. After installing a supported beta, explicitly paste it in PLAN using Have an invitation link? Group and challenge codes also work in Friends; a group code alone cannot select an exact workout room.</p></noscript>
 <style>
-.action{display:inline-flex;align-items:center;min-height:44px;padding:.35rem 1.25rem;border-radius:12px;background:var(--link);color:var(--bg);font-weight:650;text-decoration:none}
+.action{display:inline-flex;align-items:center;min-height:44px;padding:.35rem 1.25rem;border:0;border-radius:12px;background:var(--link);color:var(--bg);font:inherit;font-weight:650;text-decoration:none;cursor:pointer}
 .action[hidden]{display:none}
 .action:active{transform:translateY(1px)}
-a:focus-visible{outline:3px solid var(--link);outline-offset:5px}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--link);outline-offset:5px}
 code{font-weight:650;letter-spacing:.1em;font-size:1.3rem}
+input{box-sizing:border-box;width:100%;min-height:44px;padding:.5rem;font:inherit}
 </style>
-<script>
-// The browser handoff accepts only the same destinations as SocialInvite.swift.
-function parseInvitation(search) {
-  const params = new URLSearchParams(search);
-  const keys = [...params.keys()];
-  if (new Set(keys).size !== keys.length || keys.some(k => !['kind','code','room'].includes(k))) return null;
-  const kind = params.get('kind');
-  const code = (params.get('code') || '').trim().toUpperCase();
-  const room = params.get('room');
-  if (!['group','room','challenge'].includes(kind) || !/^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{8}$/.test(code)) return null;
-  if (kind === 'room' ? !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(room || '') : params.has('room')) return null;
-  const host = kind === 'group' ? 'join' : kind;
-  return {kind, code, url: `plan://${host}/${code}${kind === 'room' ? '/' + room : ''}`};
-}
-const invitation = parseInvitation(location.search);
-if (invitation) {
-  document.getElementById('title').textContent = invitation.kind === 'challenge' ? 'A challenge for you' : invitation.kind === 'room' ? 'Your workout room awaits' : 'Train with your friends';
-  const open = document.getElementById('open');
-  open.href = invitation.url;
-  open.hidden = false;
-  document.getElementById('details').hidden = false;
-  document.getElementById('code').textContent = invitation.code;
-  document.getElementById('instructions').textContent = invitation.kind === 'challenge' ? 'You can also enter this code in Friends, Challenges, Join with code.' : invitation.kind === 'room' ? 'This link opens the specific room. The code also lets you join its group in Friends, Groups, Join with code.' : 'You can also enter this code in Friends, Groups, Join with code.';
-} else {
-  document.getElementById('error').hidden = false;
-}
-</script>
+<script src="../invite.js" defer></script>
 
 </main>
 </body>
